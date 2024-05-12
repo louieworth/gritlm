@@ -5,14 +5,19 @@ import os
 from pathlib import Path
 import random
 
+# import os
+# import sys
+# curPath = os.path.abspath(os.path.dirname(__file__))
+# sys.path.append(curPath)
+
 import datasets
 import torch
 import torch.distributed as dist
 from transformers import AutoConfig, AutoTokenizer, HfArgumentParser, Trainer, set_seed
 
-from .arguments import CustomTrainingArguments, DataArguments, ModelArguments
-from .data import CustomCollator, CustomDataset, CustomRandomSampler
-from .model import GritLMTrainModel
+from gritlm.training.arguments import CustomTrainingArguments, DataArguments, ModelArguments
+from gritlm.training.data import CustomCollator, CustomDataset, CustomRandomSampler
+from gritlm.training.model import GritLMTrainModel
 
 BASE_BOS: str = "<s>"
 TURN_SEP: str = "\n"
@@ -135,7 +140,8 @@ def main():
 
     for file in data_files:
         logger.info("Loading dataset %s", file)
-        tmp_ds = datasets.load_dataset('json', data_files=file, split='train')
+        custom_cache_dir='/home/wenhao/jiangli/gritlm'
+        tmp_ds = datasets.load_dataset('json', data_files=file, split='train', cache_dir=custom_cache_dir)
         tmp_ds_len = len(tmp_ds)
         # For testing, can add an origin column:
         # origin_col = [file] * len(tmp_ds)
